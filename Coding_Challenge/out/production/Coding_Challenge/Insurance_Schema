@@ -1,0 +1,77 @@
+CREATE DATABASE IF NOT EXISTS InsuranceDB;
+USE InsuranceDB;
+
+CREATE TABLE Users (
+    user_id INT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(50) NOT NULL,
+    password VARCHAR(100) NOT NULL,
+    role VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE Policies (
+    policy_id INT PRIMARY KEY AUTO_INCREMENT,
+    policy_name VARCHAR(100) NOT NULL,
+    policy_type VARCHAR(50) NOT NULL,
+    premium_amount DECIMAL(10, 2) NOT NULL
+);
+
+CREATE TABLE Clients (
+    client_id INT PRIMARY KEY AUTO_INCREMENT,
+    client_name VARCHAR(100) NOT NULL,
+    contact_info VARCHAR(100) NOT NULL,
+    policy_id INT,
+    FOREIGN KEY (policy_id) REFERENCES Policies(policy_id)
+);
+
+CREATE TABLE Claims (
+    claim_id INT PRIMARY KEY AUTO_INCREMENT,
+    claim_number VARCHAR(50) NOT NULL,
+    date_filed DATE NOT NULL,
+    claim_amount DECIMAL(10, 2) NOT NULL,
+    claim_status VARCHAR(50) NOT NULL,
+    policy_id INT,
+    client_id INT,
+    FOREIGN KEY (policy_id) REFERENCES Policies(policy_id),
+    FOREIGN KEY (client_id) REFERENCES Clients(client_id)
+);
+
+CREATE TABLE Payments (
+    payment_id INT PRIMARY KEY AUTO_INCREMENT,
+    payment_date DATE NOT NULL,
+    payment_amount DECIMAL(10, 2) NOT NULL,
+    client_id INT,
+    FOREIGN KEY (client_id) REFERENCES Clients(client_id)
+);
+
+INSERT INTO Users (username, password, role)
+VALUES
+('manager01', 'safePass789', 'Admin'),
+('alice_brown', 'alpha2025', 'Client'),
+('rohit_raj', 'beta2025', 'Client');
+
+INSERT INTO Policies (policy_name, policy_type, premium_amount)
+VALUES
+('Secure Health Plan', 'Health', 4500.00),
+('Lifetime Protection Plan', 'Life', 9000.00),
+('Smart Auto Shield', 'Vehicle', 1800.00);
+
+INSERT INTO Clients (client_name, contact_info, policy_id)
+VALUES
+('Aarav Mehta', 'aarav.mehta@email.com', 1),
+('Priya Kapoor', 'priya.k@email.com', 2),
+('Zara Ali', 'zara.ali@email.com', 3);
+
+INSERT INTO Claims (claim_number, date_filed, claim_amount, claim_status, policy_id, client_id)
+VALUES
+('CLX101', '2025-02-28', 1200.00, 'Approved', 1, 1),
+('CLX102', '2025-03-15', 6200.00, 'Under Review', 2, 2),
+('CLX103', '2025-03-30', 1450.00, 'Declined', 3, 3);
+
+INSERT INTO Payments (payment_date, payment_amount, client_id)
+VALUES
+('2025-03-01', 600.00, 1),
+('2025-03-20', 850.00, 2),
+('2025-04-10', 400.00, 3);
+
+SET FOREIGN_KEY_CHECKS = 0;
+
